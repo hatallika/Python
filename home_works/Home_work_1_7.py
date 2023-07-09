@@ -41,3 +41,4 @@ for key in coll:
 for item, count in rez.items():
     if count > 1:
         print(f'Элемент {item} встречается {count} раз')
+

@@ -1,5 +1,20 @@
 # Циклы часть 3
 # Игра крестики нолики
+
+def check_win():
+    if area[0][0] == area[0][1] == area[0][2] == 'X':
+        print('Победили крестики')
+        return 'X'
+
+    if area[0][0] == area[0][1] == area[0][2] == 'O':
+        print('Победили нолики')
+        return 'O'
+
+    if step == 10:
+        print('Ничья')
+        return '-'
+
+
 game_round = 1
 while True:
     print()
@@ -8,7 +23,7 @@ while True:
         break
     elif choice == 'да':
         print(f'Раунд {game_round}')
-        game_round += 1
+        # game_round += 1
         print()
         print('Добро пожаловать в игру крестики нолики')
         print()
@@ -35,14 +50,8 @@ while True:
                 continue
             step += 1
 
-            if area[0][0] == area[0][1] == area[0][2] == 'X':
-                print('Победили крестики')
-                break
-            if area[0][0] == area[0][1] == area[0][2] == 'O':
-                print('Победили нолики')
-                break
-            if step == 10:
-                print('Ничья')
+            if check_win() == 'X' or check_win() == 'Y' or check_win() == '_':
+                game_round += 1
                 break
 
             for _ in area:
