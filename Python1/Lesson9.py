@@ -47,9 +47,9 @@
 # file.close()
 # file.writelines(result)
 
-with open('text/newtest.txt', 'w') as file:
+with open('../text/newtest.txt', 'w') as file:
     file.write('hello')
-with open('text/newtest.txt', 'a') as file:
+with open('../text/newtest.txt', 'a') as file:
     file.write('\nworld')
 # with open('text/newtest.txt') as file:
 #     print(file.read())
