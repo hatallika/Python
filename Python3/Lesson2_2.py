@@ -54,9 +54,8 @@ async def start_button(message: types.Message):
     button2 = KeyboardButton('Нет')
     keyboard.add(button1)
     keyboard.add(button2)
+
     await message.answer('Ответьте...', reply_markup=keyboard)
-
-
 
 
 if __name__ == '__main__':
