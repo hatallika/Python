@@ -28,12 +28,12 @@ print(result)
 for item in result['result']:
     print(item)
 
-chat_id = result['result'][0]['message']['chat']['id']
-user_name = result['result'][0]['message']['chat']['first_name']
-print(chat_id, user_name)
-text = f'Привет, {user_name}'
-r = urlopen(
-    f"https://api.telegram.org/bot{API_TOKEN}/sendMessage?chat_id={chat_id}&text=Hello!")
+# chat_id = result['result'][0]['message']['chat']['id']
+# user_name = result['result'][0]['message']['chat']['first_name']
+# print(chat_id, user_name)
+# text = f'Привет, {user_name}'
+# r = urlopen(
+#     f"https://api.telegram.org/bot{API_TOKEN}/sendMessage?chat_id={chat_id}&text=Hello!")
 
 
 bot = Bot(token=API_TOKEN)
