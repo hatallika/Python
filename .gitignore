@@ -2,4 +2,5 @@
 .idea/
 /venv_old/
 .env
-
+Python3/test.db
+Python3/test1.db
