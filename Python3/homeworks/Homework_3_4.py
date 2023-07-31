@@ -108,6 +108,8 @@ async def callback_answer(call: types.CallbackQuery, state: FSMContext):
                                   reply_markup=get_keyboard(step, victorina[step]['answers']))
     else:
         await call.message.answer(f'Игра закончилась, ваш счет: {score}')
+        score = 0
+        step = 0
 
 
 if __name__ == '__main__':
