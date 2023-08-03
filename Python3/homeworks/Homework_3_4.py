@@ -65,7 +65,7 @@ def get_keyboard(num, answers_list: list):
     for i in range(len(answers_list)):
         buttons.append(types.InlineKeyboardButton(text=answers_list[i], callback_data=f'question_{num}_{i}'))
 
-    keyboard = types.InlineKeyboardMarkup()
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
     keyboard.add(*buttons)
     return keyboard
 

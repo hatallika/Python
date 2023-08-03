@@ -4,3 +4,4 @@
 .env
 Python3/test.db
 Python3/test1.db
+**/__pycache__
