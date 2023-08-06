@@ -100,6 +100,8 @@ async def equal_func(call: types.CallbackQuery):
             if values_list[1] != '0':
                 result = int(values_list[0]) / int(values_list[1])
             else:
+                operator.clear()
+                values_list.clear()
                 return await call.answer('На 0 делить нельзя')
         elif operator[0] == '*':
             result = int(values_list[0]) * int(values_list[1])
