@@ -1,3 +1,4 @@
+# Создаем timeline переключатель часов и минут
 import os
 from dotenv import load_dotenv
 import logging
