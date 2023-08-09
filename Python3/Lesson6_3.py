@@ -19,6 +19,7 @@ button1 = KeyboardButton('Категории')
 button2 = KeyboardButton('Помощь')
 button3 = KeyboardButton('Отзывы')
 
+
 # Клавиатура inline
 youtube_butt = InlineKeyboardButton('Youtube', callback_data='youtube_kb')
 gamepass_butt = InlineKeyboardButton('Game Pass', callback_data='gamepass_kb')

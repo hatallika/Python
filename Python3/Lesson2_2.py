@@ -6,7 +6,9 @@ from aiogram.types import KeyboardButton, ReplyKeyboardMarkup
 from aiogram.utils.exceptions import BotBlocked
 
 # from dotenv import load_dotenv
-# load_dotenv()
+from dotenv import load_dotenv
+
+load_dotenv()
 # TOKEN = os.getenv('TOKEN')
 
 # TOKEN = os.environ['TOKEN']
