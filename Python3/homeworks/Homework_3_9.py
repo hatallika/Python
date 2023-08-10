@@ -3,7 +3,7 @@
 # Планируемый результат:#
 
 # Готовая реализация системы платежей
-# Решение, подключим Paypal к магазину товаров
+# Решение, подключим PayMaster к магазину товаров
 
 import os
 import logging
@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from aiogram.types import LabeledPrice
 from typing import List
 from aiogram.dispatcher.filters import Command
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup, KeyboardButton
 
 load_dotenv()
 # предполагаемая БД
