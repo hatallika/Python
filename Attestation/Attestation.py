@@ -22,6 +22,7 @@ from DataBase import Database
 
 load_dotenv()
 
+ADMIN_ID = os.getenv('ADMIN_ID')
 bot = Bot(token=os.getenv('TOKEN'))
 storage = MemoryStorage()
 dp = Dispatcher(bot, storage=storage)
@@ -52,12 +53,13 @@ for category in category_list:
     category_keyboard.add(KeyboardButton(category))
 category_keyboard.add(KeyboardButton('Назад'))
 
+
 # Если админ магазина (владелец бота)
 class AdminFilter(BoundFilter):
     async def check(self, message: types.Message):
         # проверим кто отправитель сообщения
         member = await message.chat.get_member(message.from_user.id)
-        return member.user.id == 426556664
+        return member.user.id == int(ADMIN_ID)
 
 
 class AwaitRegisterData(StatesGroup):
@@ -200,6 +202,7 @@ async def choice_shipping(query: types.ShippingQuery):
 @dp.message_handler(text='Назад к Меню')
 async def back_to_menu(message: types.Message):
     await message.answer('Меню магазина', reply_markup=menu_keyboard)
+
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
