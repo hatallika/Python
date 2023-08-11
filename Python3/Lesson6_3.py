@@ -19,7 +19,6 @@ button1 = KeyboardButton('Категории')
 button2 = KeyboardButton('Помощь')
 button3 = KeyboardButton('Отзывы')
 
-
 # Клавиатура inline
 youtube_butt = InlineKeyboardButton('Youtube', callback_data='youtube_kb')
 gamepass_butt = InlineKeyboardButton('Game Pass', callback_data='gamepass_kb')
@@ -124,7 +123,6 @@ async def chec_cat(call: types.CallbackQuery):
     elif call.data == 'back':
         await call.message.delete()
         await call.message.answer('Вы вернулись назад', reply_markup=start_kb)
-
 
 
 @dp.message_handler(text='Помощь')
