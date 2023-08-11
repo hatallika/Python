@@ -1,10 +1,12 @@
+# Аттестация
 # Реализовать бота интернет магазина товаров.
 # Бот должен иметь функционал регистрации пользователей,
 # содержать инлайн клавиатуру, меню,
 # использовать систему платежей,
 # возможность указать тип доставки
-# 1111 1111 1111 1026, 12/22, CVC 000.
+
 import os
+import Product
 
 from aiogram.utils.callback_data import CallbackData
 from dotenv import load_dotenv
@@ -31,23 +33,30 @@ logging.basicConfig(level=logging.INFO)
 # Keyboards
 contact_keyboard = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(
     KeyboardButton('Поделиться контактом', request_contact=True))
+
 cb_menu = CallbackData("menu", "name")
+cb_category = CallbackData("category", "name")
 
+# Главное меню
 menu_keyboard = InlineKeyboardMarkup(row_width=1)
-
 button_catalog = InlineKeyboardButton('Каталог', callback_data=cb_menu.new(name='catalog'))
 button_registration = InlineKeyboardButton('Регистрация', callback_data=cb_menu.new(name='reg'))
 button_help = InlineKeyboardButton('Помощь', callback_data=cb_menu.new(name='help'))
-
 menu_keyboard.add(button_catalog).add(button_registration).add(button_help)
 
+# Клавиатура c Категориями товаров
+category_keyboard = ReplyKeyboardMarkup()
+category_list = db.get_categories()
+for category in category_list:
+    (category,) = category
+    category_keyboard.add(KeyboardButton(category))
+category_keyboard.add(KeyboardButton('Назад'))
 
 # Если админ магазина (владелец бота)
 class AdminFilter(BoundFilter):
     async def check(self, message: types.Message):
         # проверим кто отправитель сообщения
         member = await message.chat.get_member(message.from_user.id)
-        print(member)
         return member.user.id == 426556664
 
 
@@ -57,12 +66,39 @@ class AwaitRegisterData(StatesGroup):
     register_finish = State()
 
 
+# параметры доставки
+# доставка курьером
+POST_FAST_SHIPPING = types.ShippingOption(
+    id='post_fast',
+    title='Курьер',
+    prices=[
+        types.LabeledPrice(
+            'Заводская упаковка', 0
+        ),
+        types.LabeledPrice(
+            'Курьер', 490_00
+        )
+    ]
+)
+
+# Самовывоз
+PICKUP_SHIPPING = types.ShippingOption(
+    id='pickup',
+    title='Самовывоз',
+    prices=[
+        types.LabeledPrice(
+            'Самовывоз из магазина', 0
+        )
+    ]
+)
+
+
 @dp.message_handler(CommandStart())
 async def start_bot(message: types.Message):
     await message.answer('Добро пожаловать в магазин\nМеню', reply_markup=menu_keyboard)
     # # Создали бд
     # try:
-    #     db.create_table()
+    #     db.create_table_products()
     # except Exception as err:
     #     print(err)
 
@@ -115,12 +151,55 @@ async def process_fio_add(message: types.Message, state: FSMContext):
 @dp.message_handler(AdminFilter(), Command('get_users'))
 async def get_users(message: types.Message):
     users = db.get_users_id()
-    print(users)
     text = ""
     for user_id, username in users:
         text += f'{user_id} {username}\n'
     await bot.send_message(message.from_user.id, text)
 
+
+@dp.callback_query_handler(cb_menu.filter(name=['catalog']))
+async def get_catalog(call: types.CallbackQuery):
+    await call.message.answer('Выберите категорию товара', reply_markup=category_keyboard)
+
+
+# Получили команды при выборе категорий
+@dp.message_handler(text=[''.join(data) for data in category_list])
+async def get_products(message: types.Message):
+    category_ = message.text
+    products = db.get_products(category_)
+
+    try:
+        # Получим список карточек
+        for item in products:
+            # (id, title, category, description, price, discount, img_url) = item
+            keys = ('id', 'title', 'category', 'description', 'price', 'discount', 'img_url')
+            # получили словарь
+            dictionary = dict(zip(keys, item))
+            print(dictionary)  # {'a': 1, 'b': 2, 'c': 3}
+            card = Product.get_product_class_item(dictionary, '1')
+            await bot.send_invoice(message.from_user.id, **card.generate_invoice(), payload='123456')
+    except Exception as err:
+        print(err)
+
+
+@dp.shipping_query_handler()
+async def choice_shipping(query: types.ShippingQuery):
+    # проверим адрес доставки
+    if query.shipping_address.country_code == 'RU':
+        # вернем варианты доставки
+        await bot.answer_shipping_query(shipping_options=[
+            POST_FAST_SHIPPING,
+            PICKUP_SHIPPING
+        ], shipping_query_id=query.id, ok=True)
+    else:
+        # вернем варианты доставки (нет)
+        await bot.answer_shipping_query(shipping_query_id=query.id, ok=False,
+                                        error_message='Доставки в данный регион нет')
+
+
+@dp.message_handler(text='Назад к Меню')
+async def back_to_menu(message: types.Message):
+    await message.answer('Меню магазина', reply_markup=menu_keyboard)
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
