@@ -153,7 +153,7 @@ async def show_invoices(message: types.Message):
         await bot.send_invoice(message.from_user.id, **item.generate_invoice(), payload='123456')
 
 
-@dp.shipping_query_handler
+@dp.shipping_query_handler(func=lambda query: True)
 async def choice_shipping(query: types.ShippingQuery):
     # проверим адрес доставки
     if query.shipping_address.country_code == 'RU':
